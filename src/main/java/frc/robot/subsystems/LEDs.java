@@ -11,45 +11,29 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LEDs extends SubsystemBase {
   private final PowerDistribution pdh;
 
-  /**
-   * Interface for turnin the LEDs on and off by
-   * using the power distribution hub.
-   */
   public LEDs() {
-    pdh = new PowerDistribution();
-    pdh.clearStickyFaults();
+    pdh = new PowerDistribution(); //power control for LEDs
+    pdh.clearStickyFaults(); //resets LEDs
 
-    off();
+    off(); //turns LEDs off
   }
 
-  /**
-   * Turn the leds on.
-   */
+  //turns LEDs on
   public void on() {
     pdh.setSwitchableChannel(true);
   }
 
-  /**
-   * Turn the leds off.
-   */
+  //turns LEDs off
   public void off() {
     pdh.setSwitchableChannel(false);
   }
 
-  /**
-   * Turns the leds on.
-   * 
-   * @return A command that turns the leds on.
-   */
+  //command to turn LEDs on
   public Command turnOnCommand() {
     return this.runOnce(() -> this.on());
   }
 
-  /**
-   * Turns the leds off
-   * 
-   * @return A command that turns the leds off.
-   */
+  //command to turn LEDs off
   public Command turnOffCommand() {
     return this.runOnce(() -> this.off());
   }

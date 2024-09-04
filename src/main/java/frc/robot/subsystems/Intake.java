@@ -10,73 +10,52 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
-    private VictorSPX motor;
-    private DigitalInput beam;
+    private VictorSPX motor; //motor that controls intake wheels
+    private DigitalInput beam; //beam break sensor that detects note
 
     public Intake() {
-        motor = new VictorSPX(Constants.IntakeConstants.intakeID);
-        motor.setInverted(Constants.IntakeConstants.inverted);
-        beam = new DigitalInput(Constants.IntakeConstants.beamID);
-
-        stop();
+        motor = new VictorSPX(Constants.IntakeConstants.intakeID); //victor with ID 11
+        motor.setInverted(Constants.IntakeConstants.inverted); //inverts motor
+        beam = new DigitalInput(Constants.IntakeConstants.beamID); //beam break sensor with ID 0
+        stop(); //stops the motor
     }
 
-    /**
-     * Runs the intake to intake.
-     */
+    //runs intake forward
     public void pickup() {
         motor.set(ControlMode.PercentOutput, Constants.IntakeConstants.speed);
     }
 
-    /**
-     * Stops the intake.
-     */
+    //stops intake
     public void stop() {
         motor.set(ControlMode.PercentOutput, 0);
     }
 
-    /**
-     * Runs at a less speed and in reverse for an amp shot.
-     */
+    //runs intake in reverse
     public void amp() {
         motor.set(ControlMode.PercentOutput, -Constants.IntakeConstants.speed);
     }
 
-    /**
-     * Runs ata higher speed to feed the motor.
-     */
+    //runs intake at higher speed
     public void feedShooter() {
         motor.set(ControlMode.PercentOutput, Constants.IntakeConstants.speed * 1.2);
     }
 
-    /**
-     * Runs the intake continuously and stops the intake when interrupted.
-     * 
-     * @return A command which intakes.
-     */
+    //command to run intake until interrupted
     public Command intakeCommand() {
         return this.runEnd(() -> this.pickup(), () -> this.stop());
     }
 
-    /**
-     * Runs the intake in reverse and at a less speed. Runs untill interrupted and
-     * stops the intake when interrupted.
-     * 
-     * @return the command to run the amp.
-     */
+    //command to run inverse in reverse
     public Command runAmp() {
         return this.runEnd(() -> this.amp(), () -> this.stop());
     }
 
-    /**
-     * Gets whether the intake has a note or not.
-     * 
-     * @return true if the intake detects it has a note
-     */
+    //returns true if beam is broken by note
     public boolean hasNote() {
         return !beam.get();
     }
 
+    //updates information on SmartDashboard
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Intake Beam Break", hasNote());

@@ -16,6 +16,7 @@ import frc.robot.subsystems.Swerve;
 import java.util.List;
 
 public class SideDrive extends SequentialCommandGroup {
+        //drives sideways a specified distance and rotates a specified amount of degrees
         public SideDrive(Swerve s_Swerve, double distance, double angle) {
                 TrajectoryConfig config = new TrajectoryConfig(
                                 Constants.AutoConstants.kMaxSpeedMetersPerSecond,

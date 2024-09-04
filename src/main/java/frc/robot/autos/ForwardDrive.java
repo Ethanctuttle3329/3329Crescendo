@@ -16,6 +16,7 @@ import frc.robot.subsystems.Swerve;
 import java.util.List;
 
 public class ForwardDrive extends SequentialCommandGroup {
+        //drives forward a specified distance and rotates a specified amount of degrees
         public ForwardDrive(Swerve s_Swerve, double distance, double angle) {
                 TrajectoryConfig config = new TrajectoryConfig(
                                 Constants.AutoConstants.kMaxSpeedMetersPerSecond,

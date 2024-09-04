@@ -12,10 +12,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 public class ShootCommand extends ParallelRaceGroup {
-  /** Creates a new Fire2. */
+  //spins up shooter motor, waits 0.75 seconds, and then runs intake wheels in reverse to fire
   public ShootCommand(Shooter shooter, Intake intake, Trigger noteDetectedTrigger) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         Commands.runEnd(() -> shooter.fire(), () -> shooter.stop(), shooter),
         Commands.waitSeconds(0.75)

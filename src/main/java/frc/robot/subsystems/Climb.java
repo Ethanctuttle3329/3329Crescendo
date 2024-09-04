@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -12,86 +11,51 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {
-    private CANSparkMax motor;
-    private RelativeEncoder encoder;
-    private DigitalInput limit;
-    private final double zeroPoint;
+    private CANSparkMax motor; //motor that moves the hooks
+    private DigitalInput limit; //limit switch at bottom of left hook
 
     public Climb() {
-        motor = new CANSparkMax(Constants.ClimbConstants.climbID, MotorType.kBrushless);
-        encoder = motor.getEncoder();
-        limit = new DigitalInput(Constants.ClimbConstants.bumpID);
-
-        motor.restoreFactoryDefaults();
-        motor.setIdleMode(IdleMode.kBrake);
-        motor.setSmartCurrentLimit(60);
-        motor.setInverted(Constants.ClimbConstants.inverted);
-
-        zeroPoint = encoder.getPosition();
+        motor = new CANSparkMax(Constants.ClimbConstants.climbID, MotorType.kBrushless); //sparkmax with ID 14
+        limit = new DigitalInput(Constants.ClimbConstants.bumpID); //limit switch with ID 3
+        motor.restoreFactoryDefaults(); //restores motor to factory default
+        motor.setIdleMode(IdleMode.kBrake); //sets motor to brake mode
+        motor.setSmartCurrentLimit(60); //limits current to motor
+        motor.setInverted(Constants.ClimbConstants.inverted); //inverts motor
     }
 
-    /**
-     * Makes the hooks go up.
-     */
+    //raises hooks
     public void up() {
         motor.set(Constants.ClimbConstants.speed);
     }
 
-    /**
-     * Makes the hooks go down.
-     */
+    //lowers hooks
     public void down() {
         motor.set(-Constants.ClimbConstants.speed);
     }
 
-    /**
-     * Stops the climb from climbing.
-     */
+    //stops hooks
     public void stop() {
         motor.set(0);
     }
 
-    /**
-     * Gets whether the climb has hit the lower limit.
-     * 
-     * @return true if it is at the lower limit.
-     */
+    //returns true if the hook is pressing the limit switch
     public boolean atLowerLimit() {
         return limit.get();
     }
 
-    /**
-     * Gets whehter the climb has hit the higher limit.
-     *
-     * @return true if the climb is at the higher limit.
-     */
-    public boolean atHigherLimit() {
-        return encoder.getPosition() >= zeroPoint;
-    }
-
-    /**
-     * Command to make the hooks go up. Runs infinitly until interrupted and stops
-     * the motor when interrupted.
-     * 
-     * @return the command to make the hooks go up.
-     */
+    //command to raise hooks
     public Command hooksUp() {
         return this.runEnd(() -> this.up(), () -> this.stop());
     }
 
-    /**
-     * Command to make the hooks go Down. Runs infinitly until interrupted and stops
-     * the motor when interrupted.
-     * 
-     * @return the command to make the hooks go down.
-     */
+    //command to lower hooks
     public Command hooksDown() {
         return this.runEnd(() -> this.down(), () -> this.stop());
     }
 
+    //updates information on SmartDashboard
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Lower Limit Hit", atLowerLimit());
-        SmartDashboard.putBoolean("Higher Limit Hit", atHigherLimit());
     }
 }

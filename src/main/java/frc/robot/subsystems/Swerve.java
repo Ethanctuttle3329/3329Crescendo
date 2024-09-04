@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Swerve extends SubsystemBase {
-    private final Pigeon2 gyro;
+    private final Pigeon2 gyro; //gyro that helps with field centric mode
 
     private SwerveDriveOdometry swerveOdometry;
     private frc.robot.subsystems.SwerveModule[] mSwerveMods;
@@ -25,7 +25,8 @@ public class Swerve extends SubsystemBase {
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         zeroGyro();
-
+        
+        //swerve modules
         mSwerveMods = new frc.robot.subsystems.SwerveModule[] {
                 new frc.robot.subsystems.SwerveModule(0, Constants.Swerve.Mod0.constants),
                 new frc.robot.subsystems.SwerveModule(1, Constants.Swerve.Mod1.constants),
@@ -61,6 +62,7 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    //stops swerve motion
     public void stop() {
         SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics
                 .toSwerveModuleStates(ChassisSpeeds.fromRobotRelativeSpeeds(0, 0, 0, getYaw()));
@@ -77,10 +79,7 @@ public class Swerve extends SubsystemBase {
         swerveOdometry.resetPosition(getYaw(), getStates(), pose);
     }
 
-    /**
-     * 
-     * @return
-     */
+    //returns position of each module
     public SwerveModulePosition[] getStates() {
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for (frc.robot.subsystems.SwerveModule mod : mSwerveMods) {
@@ -89,29 +88,24 @@ public class Swerve extends SubsystemBase {
         return positions;
     }
 
-    /**
-     * Sets the gyro to zero.
-     */
+    //sets gyro to zero
     public void zeroGyro() {
         gyro.setYaw(0);
     }
 
-    /**
-     * Sets the gyro to a particular value. Useful for if the autonomus is starting
-     * at an angle such that the robot is enabled at an angle.
-     * 
-     * @param value value to set to. Value is in degrees.
-     */
+    //sets gyro to a specific value
     public void setGyro(double value) {
         gyro.setYaw(value);
     }
 
+    //returns yaw of gyro
     public Rotation2d getYaw() {
         return (Constants.Swerve.invertGyro)
                 ? Rotation2d.fromDegrees(360 - (gyro.getYaw().getValue()))
                 : Rotation2d.fromDegrees(gyro.getYaw().getValue());
     }
 
+    //updates information of SmartDashboard
     @Override
     public void periodic() {
         swerveOdometry.update(getYaw(), getStates());
